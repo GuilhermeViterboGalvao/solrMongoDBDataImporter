@@ -17,7 +17,7 @@
 ### Cloning this projet
 ```bash
 cd ~
-git clone ...
+git clone https://github.com/GuilhermeViterboGalvao/solrMongoDBDataImporter
 ```
 
 ### Compiling the source code with maven
