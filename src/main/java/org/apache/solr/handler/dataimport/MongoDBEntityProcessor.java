@@ -56,16 +56,6 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
         return nextRow();
     }
 
-    @Override
-    public Map<String, Object> nextDeletedRowKey() {
-        return nextRow();
-    }
-
-    @Override
-    public Map<String, Object> nextModifiedParentRowKey() {
-        return nextRow();
-    }
-
 	private void createRowIterator() {
         if (rowIterator == null) {
             synchronized (this) {
