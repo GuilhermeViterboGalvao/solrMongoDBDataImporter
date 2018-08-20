@@ -12,13 +12,31 @@ import static org.apache.solr.handler.dataimport.DataImportHandlerException.SEVE
 public final class EntityDTO {
 
     public static final EntityDTO getInstance(Context context) {
-        return new EntityDTO(
-            context.getEntityAttribute(EntityXmlProperties.MONGO_COLLECTION.getPropertieName()),
-            context.getEntityAttribute(EntityXmlProperties.MONGO_FIND_QUERY.getPropertieName()),
-            context.getEntityAttribute(EntityXmlProperties.MONGO_FIND_DELTA_QUERY.getPropertieName()),
-            context.getEntityAttribute(EntityXmlProperties.MONGO_AGGREGATION_QUERY.getPropertieName()),
-            context.getEntityAttribute(EntityXmlProperties.MONGO_AGGREGATION_DELTA_QUERY.getPropertieName())
-        );
+        return context != null ? new EntityDTO(
+            context.getEntityAttribute(
+                EntityXmlProperties.MONGO_COLLECTION.getPropertieName()
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_FIND_QUERY.getPropertieName()
+                )
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_FIND_DELTA_QUERY.getPropertieName()
+                )
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_AGGREGATION_QUERY.getPropertieName()
+                )
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_AGGREGATION_DELTA_QUERY.getPropertieName()
+                )
+            )
+        ) : null;
     }
 
     private EntityDTO (
@@ -37,6 +55,8 @@ public final class EntityDTO {
         this.aggregationQuery = aggregationQuery != null ? aggregationQuery.trim() : "";
         this.aggregationDeltaQuery = aggregationDeltaQuery != null ? aggregationDeltaQuery.trim() : "";
     }
+
+    private Context context;
 
     private String collection;
 
@@ -66,9 +86,5 @@ public final class EntityDTO {
 
     public String getAggregationDeltaQuery() {
         return aggregationDeltaQuery;
-    }
-
-    public boolean isDeltaDommand() {
-        return ( findDeltaQuery != null && !findDeltaQuery.isEmpty() ) || ( aggregationDeltaQuery != null && !aggregationDeltaQuery.isEmpty() );
     }
 }

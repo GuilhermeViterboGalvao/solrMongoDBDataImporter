@@ -29,13 +29,16 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
 
 	private static final Logger logger = LoggerFactory.getLogger(MongoDBEntityProcessor.class);
 
-	protected MongoDBDataSource mongoDBDataSource;
+	private MongoDBDataSource mongoDBDataSource;
 
     private EntityDTO entityDTO;
+
+    private Context context;
 
 	@Override
 	public void init(Context context) {
         super.init(context);
+        this.context = context;
 	    entityDTO = EntityDTO.getInstance(context);
 		mongoDBDataSource = (MongoDBDataSource)context.getDataSource();
 	}
@@ -47,6 +50,21 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
 		logger.debug("process: " + data);
 		return data;
 	}
+
+    @Override
+    public Map<String, Object> nextModifiedRowKey() {
+        return nextRow();
+    }
+
+    @Override
+    public Map<String, Object> nextDeletedRowKey() {
+        return nextRow();
+    }
+
+    @Override
+    public Map<String, Object> nextModifiedParentRowKey() {
+        return nextRow();
+    }
 
 	private void createRowIterator() {
         if (rowIterator == null) {

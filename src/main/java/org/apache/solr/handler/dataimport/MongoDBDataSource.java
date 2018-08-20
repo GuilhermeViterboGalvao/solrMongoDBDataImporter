@@ -33,14 +33,17 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
     private EntityDTO entityDTO;
 
-	protected MongoDatabase mongoDatabase;
+	private MongoDatabase mongoDatabase;
 
 	private MongoCollection collection;
 
 	private MongoCursor cursor;
 
+	private Context context;
+
 	@Override
 	public void init(Context context, Properties initProps) {
+	    this.context = context;
 	    dataSourceDTO = DataSourceDTO.getInstance(initProps);
 	    entityDTO = EntityDTO.getInstance(context);
 		try {
@@ -62,59 +65,59 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
 	@Override
 	public Iterator<Map<String, Object>> getData(String query) {
-	    if (entityDTO.isDeltaDommand()) {
-	        if (entityDTO.getFindDeltaQuery() != null && !entityDTO.getFindDeltaQuery().isEmpty()) {
-	            logger.info(
-                    String.format(
-                        "Executing delta find query: %s",
-                        entityDTO.getFindDeltaQuery()
-                    )
+        if (Context.FIND_DELTA.equals(context.currentProcess())) {
+            if (entityDTO.getFindDeltaQuery() != null && !entityDTO.getFindDeltaQuery().isEmpty()) {
+                logger.info(
+                        String.format(
+                                "Executing delta find query: %s",
+                                entityDTO.getFindDeltaQuery()
+                        )
                 );
-	            cursor = collection.find(
-                    BsonDocument.parse(
-                        entityDTO.getFindDeltaQuery()
-                    )
+                cursor = collection.find(
+                        BsonDocument.parse(
+                                entityDTO.getFindDeltaQuery()
+                        )
                 ).iterator();
             } else if (entityDTO.getAggregationDeltaQuery() != null && !entityDTO.getAggregationDeltaQuery().isEmpty()) {
                 logger.info(
-                    String.format(
-                        "Executing delta aggregation query: %s",
-                        entityDTO.getAggregationDeltaQuery()
-                    )
+                        String.format(
+                                "Executing delta aggregation query: %s",
+                                entityDTO.getAggregationDeltaQuery()
+                        )
                 );
                 cursor = collection.aggregate(
-                    Arrays.asList(
-                        BsonArray.parse(entityDTO.getAggregationDeltaQuery()).toArray()
-                    )
+                        Arrays.asList(
+                                BsonArray.parse(entityDTO.getAggregationDeltaQuery()).toArray()
+                        )
                 ).iterator();
             } else {
                 logger.info("Executing delta findAll query: {}");
                 cursor = collection.find().iterator();
             }
         } else {
-	        if (entityDTO.getFindQuery() != null && !entityDTO.getFindQuery().isEmpty()) {
+            if (entityDTO.getFindQuery() != null && !entityDTO.getFindQuery().isEmpty()) {
                 logger.info(
-                    String.format(
-                        "Executing find query: %s",
-                        entityDTO.getFindQuery()
-                    )
+                        String.format(
+                                "Executing find query: %s",
+                                entityDTO.getFindQuery()
+                        )
                 );
                 cursor = collection.find(
-                    BsonDocument.parse(
-                        entityDTO.getFindQuery()
-                    )
+                        BsonDocument.parse(
+                                entityDTO.getFindQuery()
+                        )
                 ).iterator();
             } else if (entityDTO.getAggregationQuery() != null && !entityDTO.getAggregationQuery().isEmpty()) {
                 logger.info(
-                    String.format(
-                        "Executing aggregation query: %s",
-                        entityDTO.getAggregationQuery()
-                    )
+                        String.format(
+                                "Executing aggregation query: %s",
+                                entityDTO.getAggregationQuery()
+                        )
                 );
                 cursor = collection.aggregate(
-                    Arrays.asList(
-                        BsonArray.parse(entityDTO.getAggregationQuery()).toArray()
-                    )
+                        Arrays.asList(
+                                BsonArray.parse(entityDTO.getAggregationQuery()).toArray()
+                        )
                 ).iterator();
             } else {
                 logger.info("Executing findAll query: {}");
