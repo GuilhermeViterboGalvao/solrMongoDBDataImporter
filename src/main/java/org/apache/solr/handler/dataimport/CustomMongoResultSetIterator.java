@@ -12,6 +12,10 @@ import java.util.Set;
 import static org.apache.solr.handler.dataimport.DataImportHandlerException.SEVERE;
 import static org.apache.solr.handler.dataimport.DataImportHandlerException.wrapAndThrow;
 
+/**
+ *
+ * @author Guilherme Viterbo Galvão
+ */
 public final class CustomMongoResultSetIterator {
 
     private Iterator<Map<String, Object>> resultSet;

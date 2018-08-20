@@ -6,6 +6,9 @@ import org.apache.solr.handler.dataimport.properties.EntityXmlProperties;
 
 import static org.apache.solr.handler.dataimport.DataImportHandlerException.SEVERE;
 
+/**
+ * @author Guilherme Viterbo Galvão
+ */
 public final class EntityDTO {
 
     public static final EntityDTO getInstance(Context context) {

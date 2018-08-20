@@ -8,7 +8,7 @@
 * [4 - Download and install Maven.](doc/installMaven.md)
 * [5 - Download and install git.](doc/installGit.md)
 
-### Download the other libs
+### Downloading other libs
 
 * [1 - org.mongodb.Bson - 3.6.3](https://mvnrepository.com/artifact/org.mongodb/bson/3.6.3)
 * [2 - org.mongodb.mongo-java-driver - 3.6.3](https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver/3.6.3)

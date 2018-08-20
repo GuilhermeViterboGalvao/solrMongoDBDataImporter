@@ -12,6 +12,9 @@ import java.util.Properties;
 
 import static org.apache.solr.handler.dataimport.DataImportHandlerException.SEVERE;
 
+/**
+ * @author Guilherme Viterbo Galvão
+ */
 public final class DataSourceDTO {
 
     public static final DataSourceDTO getInstance(Properties initProps) throws NumberFormatException {

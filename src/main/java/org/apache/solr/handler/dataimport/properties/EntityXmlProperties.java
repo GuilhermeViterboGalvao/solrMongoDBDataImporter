@@ -17,6 +17,8 @@ package org.apache.solr.handler.dataimport.properties;
  *     </entity>
  *   </document>
  * </dataConfig>
+ *
+ * @author Guilherme Viterbo Galvão
  */
 public enum EntityXmlProperties {
 

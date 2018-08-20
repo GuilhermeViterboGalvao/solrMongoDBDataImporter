@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
  *      </entity>
  * </dataConfig>
  *
- * 
  * @author Guilherme Viterbo Galvão
  */
 public class MongoDBEntityProcessor extends EntityProcessorBase {
