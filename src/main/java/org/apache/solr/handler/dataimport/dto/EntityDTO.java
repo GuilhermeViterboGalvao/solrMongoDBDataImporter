@@ -35,6 +35,16 @@ public final class EntityDTO {
                 context.getEntityAttribute(
                     EntityXmlProperties.MONGO_AGGREGATION_DELTA_QUERY.getPropertieName()
                 )
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_AGGREGATION_DELTA_IMPORT_QUERY.getPropertieName()
+                )
+            ),
+            context.replaceTokens(
+                context.getEntityAttribute(
+                    EntityXmlProperties.MONGO_FIND_DELTA_IMPORT_QUERY.getPropertieName()
+                )
             )
         ) : null;
     }
@@ -44,7 +54,9 @@ public final class EntityDTO {
         String findQuery,
         String findDeltaQuery,
         String aggregationQuery,
-        String aggregationDeltaQuery
+        String aggregationDeltaQuery,
+        String aggregationDeltaImportQuery,
+        String findDeltaImportQuery
     ) {
         if (collection == null) {
             throw new DataImportHandlerException(SEVERE, "collection is null");
@@ -54,9 +66,9 @@ public final class EntityDTO {
         this.findDeltaQuery = findDeltaQuery != null ? findDeltaQuery.trim() : "";
         this.aggregationQuery = aggregationQuery != null ? aggregationQuery.trim() : "";
         this.aggregationDeltaQuery = aggregationDeltaQuery != null ? aggregationDeltaQuery.trim() : "";
+        this.aggregationDeltaImportQuery = aggregationDeltaImportQuery != null ? aggregationDeltaImportQuery.trim() : "";
+        this.findDeltaImportQuery = findDeltaImportQuery != null ? findDeltaImportQuery.trim() : "";
     }
-
-    private Context context;
 
     private String collection;
 
@@ -68,12 +80,24 @@ public final class EntityDTO {
 
     private String aggregationDeltaQuery;
 
+    private String aggregationDeltaImportQuery;
+
+    private String findDeltaImportQuery;
+
     public String getCollection() {
         return collection;
     }
 
     public String getFindQuery() {
         return findQuery;
+    }
+
+    public String getFindDeltaImportQuery() {
+        return findDeltaImportQuery;
+    }
+
+    public String getAggregationDeltaImportQuery() {
+        return aggregationDeltaImportQuery;
     }
 
     public String getFindDeltaQuery() {

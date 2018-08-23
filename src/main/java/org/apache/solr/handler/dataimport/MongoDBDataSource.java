@@ -31,19 +31,16 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
 	private DataSourceDTO dataSourceDTO;
 
-    private EntityDTO entityDTO;
-
 	private MongoDatabase mongoDatabase;
 
 	private MongoCollection collection;
 
-	private MongoCursor cursor;
+    private EntityDTO entityDTO;
 
-	private Context context;
+	private MongoCursor cursor;
 
 	@Override
 	public void init(Context context, Properties initProps) {
-	    this.context = context;
 	    dataSourceDTO = DataSourceDTO.getInstance(initProps);
 	    entityDTO = EntityDTO.getInstance(context);
 		try {
@@ -65,73 +62,27 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
 	@Override
 	public Iterator<Map<String, Object>> getData(String query) {
-        if (Context.FIND_DELTA.equals(context.currentProcess())) {
-            if (entityDTO.getFindDeltaQuery() != null && !entityDTO.getFindDeltaQuery().isEmpty()) {
-                logger.info(
-                        String.format(
-                                "Executing delta find query: %s",
-                                entityDTO.getFindDeltaQuery()
-                        )
-                );
-                cursor = collection.find(
-                        BsonDocument.parse(
-                                entityDTO.getFindDeltaQuery()
-                        )
-                ).iterator();
-            } else if (entityDTO.getAggregationDeltaQuery() != null && !entityDTO.getAggregationDeltaQuery().isEmpty()) {
-                logger.info(
-                        String.format(
-                                "Executing delta aggregation query: %s",
-                                entityDTO.getAggregationDeltaQuery()
-                        )
-                );
-                cursor = collection.aggregate(
-                        Arrays.asList(
-                                BsonArray.parse(entityDTO.getAggregationDeltaQuery()).toArray()
-                        )
-                ).iterator();
-            } else {
-                logger.info("Executing delta findAll query: {}");
-                cursor = collection.find().iterator();
-            }
-        } else {
-            if (entityDTO.getFindQuery() != null && !entityDTO.getFindQuery().isEmpty()) {
-                logger.info(
-                        String.format(
-                                "Executing find query: %s",
-                                entityDTO.getFindQuery()
-                        )
-                );
-                cursor = collection.find(
-                        BsonDocument.parse(
-                                entityDTO.getFindQuery()
-                        )
-                ).iterator();
-            } else if (entityDTO.getAggregationQuery() != null && !entityDTO.getAggregationQuery().isEmpty()) {
-                logger.info(
-                        String.format(
-                                "Executing aggregation query: %s",
-                                entityDTO.getAggregationQuery()
-                        )
-                );
-                cursor = collection.aggregate(
-                        Arrays.asList(
-                                BsonArray.parse(entityDTO.getAggregationQuery()).toArray()
-                        )
-                ).iterator();
-            } else {
-                logger.info("Executing findAll query: {}");
-                cursor = collection.find().iterator();
-            }
-        }
-        CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
-		return resultSet.getIterator();
+	    logger.info("Execution getData(String query)...");
+	    return null;
 	}
 
-	public Iterator<Map<String, Object>> getData(EntityDTO entityDTO) {
-	    this.entityDTO = entityDTO;
-		return getData("");
-	}
+	public Iterator<Map<String, Object>> getDataFromFindQuery(String findQuery) {
+        long start = System.currentTimeMillis();
+        logger.info(String.format("Executing find query: %s", findQuery));
+        cursor = collection.find(BsonDocument.parse(findQuery)).iterator();
+        logger.info("Total time to get data from Mongo in millis: {}", ( System.currentTimeMillis() - start ) );
+        CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
+        return resultSet.getIterator();
+    }
+
+    public Iterator<Map<String, Object>> getDataFromAggregationQuery(String aggregationQuery) {
+        long start = System.currentTimeMillis();
+        logger.info(String.format("Executing aggregation query: %s", aggregationQuery));
+        cursor = collection.aggregate(Arrays.asList(BsonArray.parse(aggregationQuery).toArray())).iterator();
+        logger.info("Total time to get data from Mongo in millis: {}", ( System.currentTimeMillis() - start ) );
+        CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
+        return resultSet.getIterator();
+    }
 
 	@Override
 	public void close() {

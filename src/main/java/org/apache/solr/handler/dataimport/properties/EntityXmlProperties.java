@@ -26,7 +26,9 @@ public enum EntityXmlProperties {
     MONGO_FIND_QUERY("findQuery"),
     MONGO_FIND_DELTA_QUERY("findDeltaQuery"),
     MONGO_AGGREGATION_QUERY("aggregationQuery"),
-    MONGO_AGGREGATION_DELTA_QUERY("aggregationDeltaQuery");
+    MONGO_AGGREGATION_DELTA_QUERY("aggregationDeltaQuery"),
+    MONGO_AGGREGATION_DELTA_IMPORT_QUERY("aggregationDeltaImportQuery"),
+    MONGO_FIND_DELTA_IMPORT_QUERY("findDeltaImportQuery");
 
     EntityXmlProperties(String propertieName) {
         this.propertieName = propertieName;
