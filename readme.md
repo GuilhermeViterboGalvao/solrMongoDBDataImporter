@@ -154,31 +154,15 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
     username="admin"
     password="admin123"/>
     <document name="hists">
-      <!-- 
-        if findQuery="" then it imports everything 
-        or to import specific data, use query="{ Name: 'Guilherme' }"
-      -->
      <entity  
         processor="MongoDBEntityProcessor"        
         collection="myCollection"
-        aggregationQuery="[ { '$project' :{ totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
-        aggregationDeltaQuery="[ { '$match':{ 'date': { '$gt': ISODate('${dih.hists.last_index_time') } } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
-        aggregationDeltaImportQuery="[ { '$match': { '_id': ObjectId('${dih.delta._id}') } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"        
+        fullDumpQuery="[ { '$project' :{ totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
+        findDeltaQuery="[ { '$match':{ 'date': { '$gt': ISODate('${dih.hists.last_index_time') } } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
+        deltaDumpQuery="[ { '$match': { '_id': ObjectId('${dih.delta._id}') } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"        
         datasource="MyMongoDBDataSourceName-service_development"
         transformer="ObjectIdToLongTransformer" 
         name="myEntityOfCollectionXXX">
-        <!-- 
-            OR
-            findQuery="{ totalTime: { $gte: 0 } }" for FULL IMPORT
-            OR
-            aggregationQuery="..." for FULL IMPORT
-            OR
-            findDeltaQuery="..." for DELTA IMPORT
-            OR
-            aggregationDeltaQuery="..." for DELTA IMPORT
-            OR
-            findDeltaImportQuery="..." for DELTA UNIQUE DATA IMPORT
-        -->
         <field column="_id"        name="_id"        mongoField="_id"        />
         <field column="totalTime"  name="totalTime"  mongoField="totalTime"  />
         <field column="token"      name="token"      mongoField="token"      />
@@ -206,9 +190,6 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
 
 #### Entity tag properties
 * **collection**: The name of collection you wanth extract the data.
-* **findQuery**: MongoDB find query you want to execute on full import.
-* **findDeltaQuery**: MongoDB find query you want to execute on delta import.
-* **aggregationQuery**: MongoDB aggregation query of you want to execute on full import.
-* **aggregationDeltaQuery**: MongoDB aggregation query of you want to execute on delta import.
-* **aggregationDeltaImportQuery**: MongoDB aggregation query that will execute for each unique result of "aggregationDeltaQuery".
-* **findDeltaImportQuery**: MongoDB find query that will execute for each unique result of "findDeltaQuery".
+* **fullDumpQuery**: MongoDB query for full import process.
+* **findDeltaQuery**: MongoDB query for delta import process.
+* **deltaDumpQuery**: MongoDB query to import a single record. It will be executed for each result of each item in the delta import process.
