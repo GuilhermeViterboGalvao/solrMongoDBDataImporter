@@ -60,6 +60,9 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
 	@Override
 	public Iterator<Map<String, Object>> getData(String query) {
+	    if (query == null || query.isEmpty()) {
+	        throw new RuntimeException("Query is null or empty...");
+        }
         long start = System.currentTimeMillis();
 	    if (query != null && !query.isEmpty()) {
             logger.info("Executing query: {}", query);

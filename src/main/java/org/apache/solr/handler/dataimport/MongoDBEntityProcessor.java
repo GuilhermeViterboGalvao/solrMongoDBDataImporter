@@ -47,17 +47,9 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
 	@Override
 	public Map<String, Object> nextRow() {
         if (context.currentProcess().equals(Context.FULL_DUMP)) {
-            if (entityDTO.getFindQuery() != null && !entityDTO.getFindQuery().isEmpty()) {
-                initRowIterator(entityDTO.getFindQuery());
-            } else if (entityDTO.getAggregationQuery() != null && !entityDTO.getAggregationQuery().isEmpty()) {
-                initRowIterator(entityDTO.getAggregationQuery());
-            }
+            initRowIterator(entityDTO.getFullDumpQuery());
         } else if (context.currentProcess().equals(Context.DELTA_DUMP)) {
-            if (entityDTO.getAggregationDeltaImportQuery() != null && !entityDTO.getAggregationDeltaImportQuery().isEmpty()) {
-                initRowIterator(entityDTO.getAggregationDeltaImportQuery());
-            } else if (entityDTO.getFindDeltaImportQuery() != null && !entityDTO.getFindDeltaImportQuery().isEmpty()) {
-                initRowIterator(entityDTO.getFindDeltaImportQuery());
-            }
+            initRowIterator(entityDTO.getDeltaDumpQuery());
         }
         return next();
 	}
@@ -65,11 +57,7 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
     @Override
     public Map<String, Object> nextModifiedRowKey() {
         if (context.currentProcess().equals(Context.FIND_DELTA)) {
-            if (entityDTO.getFindDeltaQuery() != null && !entityDTO.getFindDeltaQuery().isEmpty()) {
-                initRowIterator(entityDTO.getFindDeltaQuery());
-            } else if (entityDTO.getAggregationDeltaQuery() != null && !entityDTO.getAggregationDeltaQuery().isEmpty()) {
-                initRowIterator(entityDTO.getAggregationDeltaQuery());
-            }
+            initRowIterator(entityDTO.getFindDeltaQuery());
         }
         return next();
     }

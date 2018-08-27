@@ -7,12 +7,9 @@ package org.apache.solr.handler.dataimport.properties;
  *      <entity
  *         processor="MongoDBEntityProcessor"
  *         collection="myCollection"
- *         findQuery="{ ... YOUR FIND QUERY HERE ... }"
- *         findDeltaQuery="{ ... YOUR FIND DELTA QUERY HERE ... }"
- *         aggregationQuery="{ ... YOUR AGGREGATION QUERY HERE ... }"
- *         aggregationDeltaQuery="{ ... YOUR AGGREGATION DELTA QUERY HERE ... }"
- *         aggregationDeltaImportQuery="{ ... YOUR AGGREGATION DELTA QUERY HERE FOR UNIQUE RESULT ... }"
- *         findDeltaImportQuery="{ ... YOUR FIND DELTA QUERY HERE FOR UNIQUE RESULT ... }"
+ *         fullDumpQuery="Find Query { } OR Aggregation Query [ ]"
+ *         findDeltaQuery="Find Query { } OR Aggregation Query [ ]"
+ *         deltaDumpQuery="Find Query { } OR Aggregation Query [ ]"
  *         datasource="MyMongoDataSource"
  *         transformer="ObjectIdToLongTransformer"
  *         name="myEntityOfMyCollection">
@@ -25,12 +22,9 @@ package org.apache.solr.handler.dataimport.properties;
 public enum EntityXmlProperties {
 
     MONGO_COLLECTION("collection"),
-    MONGO_FIND_QUERY("findQuery"),
+    MONGO_FULL_DUMP_QUERY("fullDumpQuery"),
     MONGO_FIND_DELTA_QUERY("findDeltaQuery"),
-    MONGO_AGGREGATION_QUERY("aggregationQuery"),
-    MONGO_AGGREGATION_DELTA_QUERY("aggregationDeltaQuery"),
-    MONGO_AGGREGATION_DELTA_IMPORT_QUERY("aggregationDeltaImportQuery"),
-    MONGO_FIND_DELTA_IMPORT_QUERY("findDeltaImportQuery");
+    MONGO_DELTA_DUMP_QUERY("deltaDumpQuery");
 
     EntityXmlProperties(String propertieName) {
         this.propertieName = propertieName;
