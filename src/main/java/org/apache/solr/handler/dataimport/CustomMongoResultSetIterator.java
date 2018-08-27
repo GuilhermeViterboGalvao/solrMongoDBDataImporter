@@ -13,6 +13,7 @@ import static org.apache.solr.handler.dataimport.DataImportHandlerException.SEVE
 import static org.apache.solr.handler.dataimport.DataImportHandlerException.wrapAndThrow;
 
 /**
+ * Custom "Iterator" for MongoCursor.
  *
  * @author Guilherme Viterbo Galvão
  */

@@ -47,12 +47,10 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
             mongoDatabase = dataSourceDTO.getMongoDatabase();
             collection = mongoDatabase.getCollection(entityDTO.getCollection());
 			logger.info(
-                String.format(
-                    "mongodb [%s:%d]@%s inited",
-                    dataSourceDTO.getHost(),
-                    dataSourceDTO.getPort(),
-                    dataSourceDTO.getDatabase()
-                )
+                "Connected with success on {}:{}@{}",
+                dataSourceDTO.getHost(),
+                dataSourceDTO.getPort(),
+                dataSourceDTO.getDatabase()
             );
 		} catch (Exception e) {
 		    e.printStackTrace();
@@ -62,26 +60,23 @@ public class MongoDBDataSource extends DataSource<Iterator<Map<String, Object>>>
 
 	@Override
 	public Iterator<Map<String, Object>> getData(String query) {
-	    logger.info("Execution getData(String query)...");
+        long start = System.currentTimeMillis();
+	    if (query != null && !query.isEmpty()) {
+            logger.info("Executing query: {}", query);
+	        if (isAggregationQuery(query)) {
+                cursor = collection.aggregate(Arrays.asList(BsonArray.parse(query).toArray())).iterator();
+            } else {
+                cursor = collection.find(BsonDocument.parse(query)).iterator();
+            }
+            logger.info("Total time to get data from Mongo in millis: {}", ( System.currentTimeMillis() - start ) );
+            CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
+            return resultSet.getIterator();
+        }
 	    return null;
 	}
 
-	public Iterator<Map<String, Object>> getDataFromFindQuery(String findQuery) {
-        long start = System.currentTimeMillis();
-        logger.info(String.format("Executing find query: %s", findQuery));
-        cursor = collection.find(BsonDocument.parse(findQuery)).iterator();
-        logger.info("Total time to get data from Mongo in millis: {}", ( System.currentTimeMillis() - start ) );
-        CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
-        return resultSet.getIterator();
-    }
-
-    public Iterator<Map<String, Object>> getDataFromAggregationQuery(String aggregationQuery) {
-        long start = System.currentTimeMillis();
-        logger.info(String.format("Executing aggregation query: %s", aggregationQuery));
-        cursor = collection.aggregate(Arrays.asList(BsonArray.parse(aggregationQuery).toArray())).iterator();
-        logger.info("Total time to get data from Mongo in millis: {}", ( System.currentTimeMillis() - start ) );
-        CustomMongoResultSetIterator resultSet = new CustomMongoResultSetIterator(cursor);
-        return resultSet.getIterator();
+	private boolean isAggregationQuery(String query) {
+	    return query != null && !query.isEmpty() && query.startsWith("[");
     }
 
 	@Override

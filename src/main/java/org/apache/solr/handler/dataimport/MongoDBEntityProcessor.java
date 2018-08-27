@@ -48,15 +48,15 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
 	public Map<String, Object> nextRow() {
         if (context.currentProcess().equals(Context.FULL_DUMP)) {
             if (entityDTO.getFindQuery() != null && !entityDTO.getFindQuery().isEmpty()) {
-                initRowIteratorFromFindQuery(entityDTO.getFindQuery());
+                initRowIterator(entityDTO.getFindQuery());
             } else if (entityDTO.getAggregationQuery() != null && !entityDTO.getAggregationQuery().isEmpty()) {
-                initRowIteratorFromAggregationQuery(entityDTO.getAggregationQuery());
+                initRowIterator(entityDTO.getAggregationQuery());
             }
         } else if (context.currentProcess().equals(Context.DELTA_DUMP)) {
             if (entityDTO.getAggregationDeltaImportQuery() != null && !entityDTO.getAggregationDeltaImportQuery().isEmpty()) {
-                initRowIteratorFromAggregationQuery(entityDTO.getAggregationDeltaImportQuery());
+                initRowIterator(entityDTO.getAggregationDeltaImportQuery());
             } else if (entityDTO.getFindDeltaImportQuery() != null && !entityDTO.getFindDeltaImportQuery().isEmpty()) {
-                initRowIteratorFromFindQuery(entityDTO.getFindDeltaImportQuery());
+                initRowIterator(entityDTO.getFindDeltaImportQuery());
             }
         }
         return next();
@@ -66,40 +66,29 @@ public class MongoDBEntityProcessor extends EntityProcessorBase {
     public Map<String, Object> nextModifiedRowKey() {
         if (context.currentProcess().equals(Context.FIND_DELTA)) {
             if (entityDTO.getFindDeltaQuery() != null && !entityDTO.getFindDeltaQuery().isEmpty()) {
-                initRowIteratorFromFindQuery(entityDTO.getFindDeltaQuery());
+                initRowIterator(entityDTO.getFindDeltaQuery());
             } else if (entityDTO.getAggregationDeltaQuery() != null && !entityDTO.getAggregationDeltaQuery().isEmpty()) {
-                initRowIteratorFromAggregationQuery(entityDTO.getAggregationDeltaQuery());
+                initRowIterator(entityDTO.getAggregationDeltaQuery());
             }
         }
         return next();
     }
 
     private Map<String, Object> next() {
+	    logger.info("Current context process: {}", context.currentProcess());
         Map<String, Object> data = getNext();
-        logger.info("process: " + data);
+        logger.info("Current data: {}", data);
         return data;
     }
 
-    private void initRowIteratorFromFindQuery(String query) {
-        initRowIterator(query, true, false);
-    }
-
-	private void initRowIteratorFromAggregationQuery(String query) {
-        initRowIterator(query, false, true);
-    }
-
-    private void initRowIterator(String query, boolean isFindQuery, boolean isAggregationQuery) {
+    private void initRowIterator(String query) {
         this.query = query;
         if (rowIterator == null) {
             synchronized (this) {
                 if (rowIterator == null) {
                     try {
                         DataImporter.QUERY_COUNT.get().incrementAndGet();
-                        if (isFindQuery) {
-                            rowIterator = mongoDBDataSource.getDataFromFindQuery(query);
-                        } else if (isAggregationQuery) {
-                            rowIterator = mongoDBDataSource.getDataFromAggregationQuery(query);
-                        }
+                        rowIterator = mongoDBDataSource.getData(query);
                     } catch (DataImportHandlerException e) {
                         throw e;
                     } catch (Exception e) {

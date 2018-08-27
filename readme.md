@@ -162,6 +162,8 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
         processor="MongoDBEntityProcessor"        
         collection="myCollection"
         aggregationQuery="[ { '$project' :{ totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
+        aggregationDeltaQuery="[ { '$match':{ 'date': { '$gt': ISODate('${dih.hists.last_index_time') } } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"
+        aggregationDeltaImportQuery="[ { '$match': { '_id': ObjectId('${dih.delta._id}') } }, { '$project' :{  totalTime: 1, token: 1, statusCode: 1, requestId: 1, date: 1, month: { $month: '$date' }, day: { $dayOfMonth: '$date' }, hour: { $hour: '$date' } } } ]"        
         datasource="MyMongoDBDataSourceName-service_development"
         transformer="ObjectIdToLongTransformer" 
         name="myEntityOfCollectionXXX">
@@ -174,6 +176,8 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
             findDeltaQuery="..." for DELTA IMPORT
             OR
             aggregationDeltaQuery="..." for DELTA IMPORT
+            OR
+            findDeltaImportQuery="..." for DELTA UNIQUE DATA IMPORT
         -->
         <field column="_id"        name="_id"        mongoField="_id"        />
         <field column="totalTime"  name="totalTime"  mongoField="totalTime"  />
@@ -206,3 +210,5 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
 * **findDeltaQuery**: MongoDB find query you want to execute on delta import.
 * **aggregationQuery**: MongoDB aggregation query of you want to execute on full import.
 * **aggregationDeltaQuery**: MongoDB aggregation query of you want to execute on delta import.
+* **aggregationDeltaImportQuery**: MongoDB aggregation query that will execute for each unique result of "aggregationDeltaQuery".
+* **findDeltaImportQuery**: MongoDB find query that will execute for each unique result of "findDeltaQuery".

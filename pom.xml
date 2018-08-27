@@ -6,7 +6,7 @@
     <groupId>br.com.fazendadesoftwares</groupId>
     <artifactId>solrMongoDBDataImporter</artifactId>
     <name>Solr MongoDB Data Importer</name>
-    <version>1.0</version>
+    <version>2.0</version>
     <url>https://github.com/sucode/solrMongoDBImporter</url>
 
     <properties>

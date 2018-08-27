@@ -11,6 +11,8 @@ package org.apache.solr.handler.dataimport.properties;
  *         findDeltaQuery="{ ... YOUR FIND DELTA QUERY HERE ... }"
  *         aggregationQuery="{ ... YOUR AGGREGATION QUERY HERE ... }"
  *         aggregationDeltaQuery="{ ... YOUR AGGREGATION DELTA QUERY HERE ... }"
+ *         aggregationDeltaImportQuery="{ ... YOUR AGGREGATION DELTA QUERY HERE FOR UNIQUE RESULT ... }"
+ *         findDeltaImportQuery="{ ... YOUR FIND DELTA QUERY HERE FOR UNIQUE RESULT ... }"
  *         datasource="MyMongoDataSource"
  *         transformer="ObjectIdToLongTransformer"
  *         name="myEntityOfMyCollection">
