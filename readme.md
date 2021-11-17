@@ -193,3 +193,34 @@ cp ~/SolrMongoDBDataImporter/target/solrMongoDBDataImporter-1.0.jar .
 * **fullDumpQuery**: MongoDB query for full import process.
 * **findDeltaQuery**: MongoDB query for delta import process.
 * **deltaDumpQuery**: MongoDB query to import a single record. It will be executed for each result of each item in the delta import process.
+
+#### New MongoDocumentTransformer
+Allow you use other types of mongo fields like 'document' and 'arrays'. Above all options available.
+
+##### documentObject
+If you need to use a document field, this option is for you. You just need to add this 'tag' on your field declaration. Example:
+
+```xml
+<field column="address.number" name="address" mongoField="address.number" documentObject="true" />
+```
+
+##### arrayObject
+To use an array field, this option is for you. You just need to add this 'tag' on your field declaration. Example:
+
+```xml
+<field column="phones.0.phoneType" name="phoneType" mongoField="phones.0.phoneType" arrayObject="true" />
+```
+
+##### fromStringEnumToIntegerValueObject
+If you need to trasnform a text enum value in an integer value, this option is for you. You just need to add this 'tag' and the 'tag' *fromStringEnumToIntegerValueObjectData* with the values on your field declaration. Example:
+
+```xml
+<field column="genderType" name="genderType" mongoField="genderType" fromStringEnumToIntegerValueObject="true" fromStringEnumToIntegerValueObjectData="Male=1,Female=2" />
+```
+
+##### fixValueObject
+If you need to ignore the mongo value and use a fix value, this option is for you. You just need to add this 'tag' and the 'tag' *fixValueObjectData* with the fix value on your field declaration. Example:
+
+```xml
+<field column="companyToken" name="companyToken" mongoField="no-use" fixValueObject="true" fixValueObjectData="dgfhsjs7262818kjjh" />
+```
